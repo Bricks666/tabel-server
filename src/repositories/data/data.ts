@@ -65,8 +65,11 @@ export class DataRepository {
 		const result = await this.#client.query<DataModel>(query);
 		return result.rows[0];
 	}
-	async deleteData(params: DeleteDataParams): Promise<number> {
-		return params.id;
+	async deleteData(params: DeleteDataParams): Promise<void> {
+		const { id } = params;
+		const query = `
+    DELETE FROM ${this.#table} WHERE id = ${id};`;
+		await this.#client.query(query);
 	}
 
 	async getTotalCount(params: GetTotalCountParams): Promise<number> {

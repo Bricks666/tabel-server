@@ -79,9 +79,11 @@ export class DataController {
 		});
 	};
 
-	async deleteData() {
-		return undefined;
-	}
+	deleteData: RequestHandler<UpdateOrDeleteDataParams> = async (req, res) => {
+		const { id } = req.params;
+		await this.#dataService.deleteData({ id });
+		res.end();
+	};
 }
 
 export const dataController = new DataController(dataService);

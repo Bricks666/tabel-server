@@ -3,8 +3,9 @@ import {
 	DataModel,
 	dataRepository,
 	DataRepository,
+	DeleteDataParams,
 	GetDataParams,
-  UpdateDataParams,
+	UpdateDataParams,
 } from '@/repositories/data';
 import { GetDataResult } from './types';
 
@@ -30,7 +31,9 @@ export class DataService {
 	async updateData(params: UpdateDataParams): Promise<DataModel> {
 		return await this.#dataRepository.updateData(params);
 	}
-	async deleteData() {}
+	async deleteData(params: DeleteDataParams): Promise<void> {
+		return await this.#dataRepository.deleteData(params);
+	}
 }
 
 export const dataService = new DataService(dataRepository);
