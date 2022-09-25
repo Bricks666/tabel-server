@@ -1,4 +1,6 @@
 import {
+	CreateDataParams,
+	DataModel,
 	dataRepository,
 	DataRepository,
 	GetDataParams,
@@ -21,7 +23,14 @@ export class DataService {
 			totalCount,
 		};
 	}
-	async createData() {}
+	async createData(params: CreateDataParams): Promise<DataModel> {
+		const result = await this.#dataRepository.createData(params);
+
+		return {
+			id: result,
+			...params,
+		};
+	}
 	async updateData() {}
 	async deleteData() {}
 }

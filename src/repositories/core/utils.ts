@@ -1,4 +1,4 @@
-import { Filter, FilterType } from './types';
+import { AllowedType, Filter, FilterType } from './types';
 
 const sightMap: Record<FilterType, string> = {
 	contain: 'like',
@@ -9,10 +9,10 @@ const sightMap: Record<FilterType, string> = {
 
 export const parseFieldValue = (
 	field: string,
-	value: string,
+	value: AllowedType,
 	separator: string
 ): string => {
-	return `${JSON.stringify(field)} ${separator} ${value}`;
+	return `${prepareValue(field)} ${separator} ${prepareValue(value)}`;
 };
 
 export const parseFilter = (filter?: Filter): string => {
@@ -25,4 +25,12 @@ export const parseFilter = (filter?: Filter): string => {
 		filter.value,
 		sightMap[filter.type]
 	)}`;
+};
+
+export const prepareValue = (value: AllowedType): string => {
+	if (typeof value === 'string') {
+		return JSON.stringify(value).replace(/"/g, '\'');
+	}
+
+	return value.toString();
 };

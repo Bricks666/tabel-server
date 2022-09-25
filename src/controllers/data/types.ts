@@ -14,3 +14,9 @@ export interface GetDataQuery {
 	readonly filterType?: FilterType;
 	readonly filterValue?: string;
 }
+
+export interface CreateDataRequestBody extends Omit<DataModel, 'id'> {}
+
+export interface CreateDataResponseBody {
+	readonly data: DataModel;
+}

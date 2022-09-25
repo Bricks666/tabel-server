@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { client, parseFilter } from '../core';
+import { client, parseFilter, prepareValue } from '../core';
 import {
 	CreateDataParams,
 	DataModel,
@@ -40,8 +40,16 @@ export class DataRepository {
 		console.log(result);
 		return result.rows;
 	}
-	async createData(params: CreateDataParams): Promise<void> {
-		console.log(params);
+	async createData(params: CreateDataParams): Promise<number> {
+		const { count, date, distance, name } = params;
+		const query = `INSERT INTO ${
+			this.#table
+		}(name, count, distance, date) values(${prepareValue(name)}, ${prepareValue(
+			count
+		)}, ${prepareValue(distance)}, ${prepareValue(date)}) returning id;`;
+		const result = await this.#client.query<Pick<DataModel, 'id'>>(query);
+
+		return result.rows[0].id;
 	}
 	async updateData(params: UpdateDataParams) {
 		console.log(params);

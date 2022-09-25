@@ -1,6 +1,11 @@
 import { RequestHandler } from 'express';
 import { DataService, dataService } from '@/services/data';
-import { GetDataQuery, GetDataResponseBody } from './types';
+import {
+	CreateDataRequestBody,
+	CreateDataResponseBody,
+	GetDataQuery,
+	GetDataResponseBody,
+} from './types';
 import { Filter } from '@/repositories/core';
 
 export class DataController {
@@ -48,9 +53,16 @@ export class DataController {
 			onPageCount: +count,
 		});
 	};
-	async createData() {
-		return undefined;
-	}
+	createData: RequestHandler<
+		undefined,
+		CreateDataResponseBody,
+		CreateDataRequestBody
+	> = async (req, res) => {
+		const result = await this.#dataService.createData(req.body);
+		res.json({
+			data: result,
+		});
+	};
 	async deleteData() {
 		return undefined;
 	}
