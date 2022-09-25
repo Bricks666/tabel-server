@@ -1,11 +1,12 @@
 import { Client } from 'pg';
-import { client, parseFilter, prepareValue } from '../core';
+import { client, parseFieldValue, parseFilter, prepareValue } from '../core';
 import {
 	CreateDataParams,
 	DataModel,
 	DeleteDataParams,
 	GetDataParams,
 	GetTotalCountParams,
+	GetTotalCountResponse,
 	UpdateDataParams,
 } from './types';
 
@@ -32,39 +33,50 @@ export class DataRepository {
 	async getData(params: GetDataParams): Promise<DataModel[]> {
 		const { limit, filter } = params;
 		const start = limit.count * (limit.page - 1);
-		const result = await this.#client.query<DataModel>(
-			`SELECT name, count, distance, date from ${this.#table} ${parseFilter(
-				filter
-			)} limit ${limit.count} OFFSET ${start};`
-		);
+		const query = `SELECT name, count, distance, date from ${
+			this.#table
+		} ${parseFilter(filter)} limit ${limit.count} OFFSET ${start};`;
+		const result = await this.#client.query<DataModel>(query);
 		console.log(result);
 		return result.rows;
 	}
-	async createData(params: CreateDataParams): Promise<number> {
+	async createData(params: CreateDataParams): Promise<DataModel> {
 		const { count, date, distance, name } = params;
 		const query = `INSERT INTO ${
 			this.#table
 		}(name, count, distance, date) values(${prepareValue(name)}, ${prepareValue(
 			count
-		)}, ${prepareValue(distance)}, ${prepareValue(date)}) returning id;`;
-		const result = await this.#client.query<Pick<DataModel, 'id'>>(query);
+		)}, ${prepareValue(distance)}, ${prepareValue(
+			date
+		)}) returning id, name, count, distance, date;`;
+		const result = await this.#client.query(query);
 
-		return result.rows[0].id;
+		return result.rows[0];
 	}
-	async updateData(params: UpdateDataParams) {
-		console.log(params);
+	async updateData(params: UpdateDataParams): Promise<DataModel> {
+		const { id, ...rest } = params;
+		const pairs = Object.entries(rest);
+		const updateValues = pairs.map(([field, value]) =>
+			parseFieldValue(field, value, '=')
+		);
+		const query = `UPDATE ${
+			this.#table
+		} SET ${updateValues.toString()} WHERE id = ${id} RETURNING id, name, count, distance, date;`;
+		const result = await this.#client.query<DataModel>(query);
+		return result.rows[0];
 	}
-	async deleteData(params: DeleteDataParams) {
-		console.log(params);
+	async deleteData(params: DeleteDataParams): Promise<number> {
+		return params.id;
 	}
 
 	async getTotalCount(params: GetTotalCountParams): Promise<number> {
 		const { filter } = params;
-		const result = await this.#client.query<[number]>(
-			`SELECT count(id) from ${this.#table} ${parseFilter(filter)};`
-		);
+		const query = `SELECT count(id) as totalCount from ${
+			this.#table
+		} ${parseFilter(filter)};`;
+		const result = await this.#client.query<GetTotalCountResponse>(query);
 
-		return result.rows[0][0];
+		return result.rows[0].totalCount;
 	}
 }
 

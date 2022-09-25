@@ -12,7 +12,7 @@ export const parseFieldValue = (
 	value: AllowedType,
 	separator: string
 ): string => {
-	return `${prepareValue(field)} ${separator} ${prepareValue(value)}`;
+	return `${field} ${separator} ${prepareValue(value)}`;
 };
 
 export const parseFilter = (filter?: Filter): string => {

@@ -26,3 +26,7 @@ export interface CreateDataParams extends Omit<DataModel, 'id'> {}
 export interface GetTotalCountParams {
 	readonly filter?: Filter;
 }
+
+export interface GetTotalCountResponse {
+	readonly totalCount: number;
+}

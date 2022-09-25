@@ -4,6 +4,7 @@ import {
 	dataRepository,
 	DataRepository,
 	GetDataParams,
+  UpdateDataParams,
 } from '@/repositories/data';
 import { GetDataResult } from './types';
 
@@ -24,14 +25,11 @@ export class DataService {
 		};
 	}
 	async createData(params: CreateDataParams): Promise<DataModel> {
-		const result = await this.#dataRepository.createData(params);
-
-		return {
-			id: result,
-			...params,
-		};
+		return await this.#dataRepository.createData(params);
 	}
-	async updateData() {}
+	async updateData(params: UpdateDataParams): Promise<DataModel> {
+		return await this.#dataRepository.updateData(params);
+	}
 	async deleteData() {}
 }
 

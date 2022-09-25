@@ -1,12 +1,14 @@
 import { RequestHandler } from 'express';
 import { DataService, dataService } from '@/services/data';
 import {
-	CreateDataRequestBody,
-	CreateDataResponseBody,
+	CreateOrUpdateDataResponseBody,
 	GetDataQuery,
 	GetDataResponseBody,
+	UpdateDataRequestBody,
+	UpdateOrDeleteDataParams,
 } from './types';
 import { Filter } from '@/repositories/core';
+import { CreateDataParams } from '@/repositories/data';
 
 export class DataController {
 	readonly #dataService: DataService;
@@ -53,20 +55,31 @@ export class DataController {
 			onPageCount: +count,
 		});
 	};
+
 	createData: RequestHandler<
 		undefined,
-		CreateDataResponseBody,
-		CreateDataRequestBody
+		CreateOrUpdateDataResponseBody,
+		CreateDataParams
 	> = async (req, res) => {
 		const result = await this.#dataService.createData(req.body);
 		res.json({
 			data: result,
 		});
 	};
+	updateData: RequestHandler<
+		UpdateOrDeleteDataParams,
+		CreateOrUpdateDataResponseBody,
+		UpdateDataRequestBody
+	> = async (req, res) => {
+		const { id } = req.params;
+		const result = await this.#dataService.updateData({ id, ...req.body });
+
+		res.json({
+			data: result,
+		});
+	};
+
 	async deleteData() {
-		return undefined;
-	}
-	async updateData() {
 		return undefined;
 	}
 }

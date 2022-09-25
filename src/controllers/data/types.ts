@@ -1,5 +1,5 @@
 import { FilterType } from '@/repositories/core';
-import { DataModel } from '@/repositories/data';
+import { DataModel, UpdateDataParams } from '@/repositories/data';
 
 export interface GetDataResponseBody {
 	readonly data: DataModel[];
@@ -15,8 +15,12 @@ export interface GetDataQuery {
 	readonly filterValue?: string;
 }
 
-export interface CreateDataRequestBody extends Omit<DataModel, 'id'> {}
-
-export interface CreateDataResponseBody {
+export interface CreateOrUpdateDataResponseBody {
 	readonly data: DataModel;
+}
+
+export interface UpdateDataRequestBody extends Omit<UpdateDataParams, 'id'> {}
+
+export interface UpdateOrDeleteDataParams {
+	readonly id: number;
 }
