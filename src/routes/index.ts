@@ -1,8 +1,6 @@
 import { Router } from 'express';
-import dataRoute from './data';
+import {dataRoute} from './data';
 
-const route = Router();
+export const appRoute = Router();
 
-route.use('/data', dataRoute);
-
-export default route;
+appRoute.use('/data', dataRoute);

@@ -1,10 +1,9 @@
 import { Router } from 'express';
+import { dataController } from '../controllers/data/data';
 
-const route = Router();
+export const dataRoute = Router();
 
-route.get('/')
-route.post('/')
-route.put('/:id')
-route.delete('/:id')
-
-export default route;
+dataRoute.get('/', dataController.getData);
+dataRoute.post('/', dataController.createData);
+dataRoute.put('/:id', dataController.updateData);
+dataRoute.delete('/:id', dataController.deleteData);
