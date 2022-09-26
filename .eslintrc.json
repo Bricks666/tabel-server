@@ -26,7 +26,8 @@
 		"no-self-compare": "error",
 
 		/* TYPESCRIPT */
-		"@typescript-eslint/no-explicit-any": "error"
+		"@typescript-eslint/no-explicit-any": "error",
+		"@typescript-eslint/no-empty-interface": "off"
 	},
 	"ignorePatterns": ["*.config.*", "*.js", "*.mjs"]
 }
