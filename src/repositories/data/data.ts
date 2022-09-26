@@ -5,6 +5,7 @@ import {
 	DataModel,
 	DeleteDataParams,
 	GetDataParams,
+	GetOneDataParams,
 	GetTotalCountParams,
 	GetTotalCountResponse,
 	UpdateDataParams,
@@ -33,13 +34,23 @@ export class DataRepository {
 	async getData(params: GetDataParams): Promise<DataModel[]> {
 		const { limit, filter } = params;
 		const start = limit.count * (limit.page - 1);
-		const query = `SELECT name, count, distance, date from ${
-			this.#table
-		} ${parseFilter(filter)} limit ${limit.count} OFFSET ${start};`;
+		const query = `SELECT * from ${this.#table} ${parseFilter(filter)} ORDER BY id LIMIT ${
+			limit.count
+		} OFFSET ${start};`;
 		const result = await this.#client.query<DataModel>(query);
-		console.log(result);
 		return result.rows;
 	}
+	async getOneData(params: GetOneDataParams): Promise<DataModel> {
+		const { id } = params;
+		const query = `SELECT * from ${this.#table} ${parseFilter({
+			column: 'id',
+			type: 'equal',
+			value: id,
+		})};`;
+		const result = await this.#client.query<DataModel>(query);
+		return result.rows[0];
+	}
+
 	async createData(params: CreateDataParams): Promise<DataModel> {
 		const { count, date, distance, name } = params;
 		const query = `INSERT INTO ${
@@ -79,7 +90,7 @@ export class DataRepository {
 		} ${parseFilter(filter)};`;
 		const result = await this.#client.query<GetTotalCountResponse>(query);
 
-		return result.rows[0].totalCount;
+		return result.rows[0].totalcount;
 	}
 }
 

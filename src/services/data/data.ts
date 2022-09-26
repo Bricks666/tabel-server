@@ -5,6 +5,7 @@ import {
 	DataRepository,
 	DeleteDataParams,
 	GetDataParams,
+	GetOneDataParams,
 	UpdateDataParams,
 } from '@/repositories/data';
 import { GetDataResult } from './types';
@@ -24,6 +25,9 @@ export class DataService {
 			data,
 			totalCount,
 		};
+	}
+	async getOneData(params: GetOneDataParams): Promise<DataModel> {
+		return await this.#dataRepository.getOneData(params);
 	}
 	async createData(params: CreateDataParams): Promise<DataModel> {
 		return await this.#dataRepository.createData(params);

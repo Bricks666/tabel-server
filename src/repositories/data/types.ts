@@ -4,7 +4,7 @@ export interface DataModel {
 	readonly id: number;
 	readonly name: string;
 	readonly count: number;
-	readonly distance: string;
+	readonly distance: number;
 	readonly date: string;
 }
 
@@ -21,6 +21,10 @@ export interface DeleteDataParams {
 	readonly id: number;
 }
 
+export interface GetOneDataParams {
+	readonly id: number;
+}
+
 export interface CreateDataParams extends Omit<DataModel, 'id'> {}
 
 export interface GetTotalCountParams {
@@ -28,5 +32,5 @@ export interface GetTotalCountParams {
 }
 
 export interface GetTotalCountResponse {
-	readonly totalCount: number;
+	readonly totalcount: number;
 }

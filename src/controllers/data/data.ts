@@ -22,7 +22,7 @@ export class DataController {
 		GetDataResponseBody,
 		undefined,
 		GetDataQuery
-	> = async (req, res) => {
+	> = async (req, res, next) => {
 		const {
 			page = 1,
 			count = 50,
@@ -43,46 +43,81 @@ export class DataController {
 				value: filterValue,
 			};
 		}
-		const result = await this.#dataService.getData({
-			limit: {
-				page,
-				count,
-			},
-			filter,
-		});
-		res.json({
-			...result,
-			onPageCount: +count,
-		});
+		try {
+			const result = await this.#dataService.getData({
+				limit: {
+					page,
+					count,
+				},
+				filter,
+			});
+			res.json({
+				...result,
+				onPageCount: +count,
+			});
+		} catch (err) {
+			next(err);
+		}
 	};
 
 	createData: RequestHandler<
 		undefined,
 		CreateOrUpdateDataResponseBody,
 		CreateDataParams
-	> = async (req, res) => {
-		const result = await this.#dataService.createData(req.body);
-		res.json({
-			data: result,
-		});
+	> = async (req, res, next) => {
+		try {
+			const result = await this.#dataService.createData(req.body);
+			res.json({
+				data: result,
+			});
+		} catch (err) {
+			next(err);
+		}
 	};
 	updateData: RequestHandler<
 		UpdateOrDeleteDataParams,
 		CreateOrUpdateDataResponseBody,
 		UpdateDataRequestBody
-	> = async (req, res) => {
+	> = async (req, res, next) => {
 		const { id } = req.params;
-		const result = await this.#dataService.updateData({ id, ...req.body });
+		try {
+			const result = await this.#dataService.updateData({ id, ...req.body });
 
-		res.json({
-			data: result,
-		});
+			res.json({
+				data: result,
+			});
+		} catch (err) {
+			next(err);
+		}
 	};
 
-	deleteData: RequestHandler<UpdateOrDeleteDataParams> = async (req, res) => {
+	deleteData: RequestHandler<UpdateOrDeleteDataParams> = async (
+		req,
+		res,
+		next
+	) => {
 		const { id } = req.params;
-		await this.#dataService.deleteData({ id });
-		res.end();
+		try {
+			await this.#dataService.deleteData({ id });
+			res.end();
+		} catch (err) {
+			next(err);
+		}
+	};
+
+	getOneData: RequestHandler<
+		UpdateOrDeleteDataParams,
+		CreateOrUpdateDataResponseBody
+	> = async (req, res, next) => {
+		const { id } = req.params;
+		try {
+			const result = await this.#dataService.getOneData({ id });
+			res.json({
+				data: result,
+			});
+		} catch (err) {
+			next(err);
+		}
 	};
 }
 

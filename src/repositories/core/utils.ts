@@ -19,17 +19,14 @@ export const parseFilter = (filter?: Filter): string => {
 	if (!filter) {
 		return '';
 	}
-
-	return `where ${parseFieldValue(
-		filter.column,
-		filter.value,
-		sightMap[filter.type]
-	)}`;
+	const sight = sightMap[filter.type];
+	const value = sight === 'like' ? `%${filter.value}%` : filter.value;
+	return `where ${parseFieldValue(filter.column, value, sight)}`;
 };
 
 export const prepareValue = (value: AllowedType): string => {
 	if (typeof value === 'string') {
-		return JSON.stringify(value).replace(/"/g, '\'');
+		return JSON.stringify(value).replace(/"/g, "'");
 	}
 
 	return value.toString();
