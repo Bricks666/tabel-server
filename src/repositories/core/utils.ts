@@ -26,7 +26,7 @@ export const parseFilter = (filter?: Filter): string => {
 
 export const prepareValue = (value: AllowedType): string => {
 	if (typeof value === 'string') {
-		return JSON.stringify(value).replace(/"/g, "'");
+		return JSON.stringify(value).replace(/"/g, '\'');
 	}
 
 	return value.toString();

@@ -2,21 +2,21 @@ import * as dotenv from 'dotenv';
 import express, { json } from 'express';
 import cors from 'cors';
 import { faker } from '@faker-js/faker';
-import { HOST, PORT } from './consts/server';
+import { ORIGIN_URL, HOST, PORT } from './consts/server';
 import { client } from './repositories/core';
 import { dataRepository } from './repositories/data';
 import { appRoute } from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 dotenv.config({
-	path: '.env.local',
+	path: '.env',
 });
-
+console.log(process.env);
 const app = express();
 
 app.use(
 	json(),
 	cors({
-		origin: /localhost/,
+		origin: ORIGIN_URL,
 	})
 );
 
